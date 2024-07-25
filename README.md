@@ -46,7 +46,21 @@ mpicc -o mpi-infiniband-benchmark mpi-infiniband-benchmark.c
 ```bash
 mpirun -np 2 --host [node1],[node2] ./mpi-infiniband-benchmark [time(s)]
 ```
+
 ex.
 ```bash
 mpirun -np 2 --host hpc1,hpc2 ./mpi-infiniband-benchmark 60
+```
+
+
+
+
+---
+output:
+```
+hpc@hpc1:~/shared$ mpirun -np 2 --host hpc1,hpc2 ./mpi-infiniband-benchmark 10
+Average bandwidth: 5726.45 MB/s (45.81 Gbps)
+Total data transferred: 57266.00 MB
+Number of iterations: 28633
+Total time: 10.00 seconds
 ```

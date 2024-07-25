@@ -12,6 +12,8 @@ int main(int argc, char** argv) {
     MPI_Status status;
     double start_time, end_time, elapsed_time = 0.0;
     int desired_seconds;
+    long long total_bytes = 0;
+    int iterations = 0;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -52,8 +54,19 @@ int main(int argc, char** argv) {
             MPI_Recv(buffer, BUFFER_SIZE, MPI_CHAR, 0, 0, MPI_COMM_WORLD, &status);
             MPI_Send(buffer, BUFFER_SIZE, MPI_CHAR, 0, 0, MPI_COMM_WORLD);
         }
+        total_bytes += 2 * BUFFER_SIZE; 
+        iterations++;
         end_time = MPI_Wtime();
         elapsed_time = end_time - start_time;
+    }
+
+    if (rank == 0) {
+        double bandwidth_MBps = (total_bytes / (1024.0 * 1024.0)) / elapsed_time; 
+        double bandwidth_Gbps = bandwidth_MBps * 8 / 1000; 
+        printf("Average bandwidth: %.2f MB/s (%.2f Gbps)\n", bandwidth_MBps, bandwidth_Gbps);
+        printf("Total data transferred: %.2f MB\n", total_bytes / (1024.0 * 1024.0));
+        printf("Number of iterations: %d\n", iterations);
+        printf("Total time: %.2f seconds\n", elapsed_time);
     }
 
     free(buffer);
